@@ -25,14 +25,37 @@ int register_dispopr(PT_DispOpr pt_dispopr)
 	return 0;
 }
 
-void show_dispopr(void)
+void show_disp_opr(void)
 {
 	int i = 0;
-	PT_DispOpr pt_tmp = g_pt_dispopr_head;
+	PT_disp_opr pt_tmp = g_pt_dispopr_head;
 
 	while(pt_tmp)
 	{
-		
+		printf("%02d %s\n", i++, pt_tmp->name);
+		pt_tmp = pt_tmp->pt_next;
 	}
 }
 
+
+PT_disp_opr get_disp_opr(char *name)
+{
+	PT_disp_opr pt_tmp = g_pt_dispopr_head;
+
+	while(pt_tmp)
+	{
+		if(strcmp(pt_tmp->name, name) == 0)
+		{
+			return pt_tmp;
+		}
+		pt_tmp = pt_tmp->pt_next;
+	}
+	return NULL;
+}
+
+int display_init(void)
+{
+		int i_error;
+		i_error = fb_init();
+		return i_error;
+}

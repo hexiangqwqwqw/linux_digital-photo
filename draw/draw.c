@@ -252,6 +252,7 @@ int show_onepage(unsigned char *puc_textfile_memcur_pos)
 	int i_error;
 	unsigned char *puc_buf_start;
 	unsigned char int dw_code;
+	PT_font_opr	pt_font_opr;
 	PT_font_bitmap t_font_bitmap;
 
 	int i_has_not_clrscreen = 1;
@@ -275,7 +276,160 @@ int show_onepage(unsigned char *puc_textfile_memcur_pos)
 				return 0;
 			}
 		}
+
+		i_has_get_code = 1;
+
+		puc_buf_start += i_len;
+
+		if(dw_code == '\n')
+		{
+			g_puc_lcd_next_possat_file = puc_buf_start;
+
+			t_font_bitmap.icur_originx = 0;
+			t_font_bitmap.icur_originy = intc_lcdy(t_font_bitmap.icur_originy);
+			if(t_font_bitmap.icur_originy == 0)
+			{
+				return 0;
+			}
+			else
+			{
+				continue;
+			}
+		}
+		else if (dw_code == "\r")
+		{
+				continue;
+		}
+		else if(dw_code == "\t")
+		{
+			dw_code = ' ';
+		}
+
+		DBG_PRINTF("dw_code = 0x%x\n", dw_code);
+
+		pt_font_opr = g_pt_encoding_opr_for_file->pt_font_opr_supported_head;
+		while(pt_font_opr)
+		{
+			DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+			i_error = pt_font_opr->get_fontbitmap(dw_code, &t_font_bitmap);
+			DBG_PRINTF("%s %s %d, pt_font_opr->name = %s. %d\n", __FILE__, __FUNCTION__, __LINE__, pt_font_opr->name, i_error);
+
+			if(i_error == 0)
+			{
+				DBG_PRINTF("%s %s %d\n", __FILE__, FUNCTION__, __LINE__);
+				if(relocate_fontpos(&t_font_bitmap))
+				{
+					return 0;
+				}
+				DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+
+				if(i_has_not_clrscreen)
+				{
+					g_pt_disp_opr->clean_screen(COLOR_BACKGROUND);
+					i_has_not_clrscreen = 0;
+				}
+				DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+
+				if(show_onefont(&t_font_bitmap))
+				{
+					return -1;
+				}
+
+				t_font_bitmap.icur_originx = t_font_bitmap.inext_originx;
+				t_font_bitmap.icur_originx = t_font_bitmap.inext_originy;
+				g_puc_lcd_next_possat_file = puc_buf_start;
+
+				break;
+			}
+			pt_font_opr = pt_font_opr->pt_next;
+		}
 		
 	}
+	return 0;
+}
+
+static void record_page(PT_page_desc pt_page_new)
+{
+	PT_page_desc pt_page;
+
+	if(!g_pt_pages)
+	{
+		g_pt_pages = pt_page_new;
+	}
+	else
+	{
+		pt_page = g_pt_pages;
+		while(pt_page->pt_next_page)
+		{
+			pt_page = pt_page->pt_next_page;
+		}
+		pt_page->pt_next_page = pt_page_new;
+		pt_page_new->pt_pre_page = pt_page;
+	}
+}
+
+int show_next_page(void)
+{
+	int i_error;
+	PT_page_desc pt_page;
+	unsigned char *puc_text_file_mem_curpos;
+	if(g_pt_cur_page)
+	{
+		puc_text_file_mem_curpos = g_pt_cur_page->puc_lcd_next_page_first_pos_file;
+	}
+	else
+	{
+		puc_text_file_mem_curpos = g_puc_lcd_first_posat_file;
+	}
+
+	i_error = show_onepage(puc_text_file_mem_curpos);
+	DBG_PRINTF("%s %d %d\n", __FUNCTION__, __LINE__, i_error);
+	if(i_error == 0)
+	{
+		if(g_pt_cur_page && g_pt_cur_page->pt_next_page)
+		{
+			g_pt_cur_page = g_pt_cur_page->pt_next_page;
+			return 0;
+		}
+	}
+
+	pt_page = malloc(sizeof(T_page_desc));
+	if(pt_page)
+	{
+		pt_page->puc_lcd_first_pos_file		        = puc_text_file_mem_curpos;
+		pt_page->puc_lcd_next_page_first_pos_file	= g_puc_lcd_next_possat_file;
+		pt_page->pt_pre_page						= NULL;
+		pt_page->pt_next_page						= NULL;
+		g_pt_cur_page = pt_page;
+		DBG_PRINTF("%s %d, pos = 0x%x\n", __FUNCTION__, __LINE__, (unsigned int)pt_page->puc_lcd_first_pos_file);
+		record_page(pt_page);
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
+
+	return i_error;
+}
+
+int show_pre_page(void)
+{
+	int i_error;
+
+	DBG_PRINTF("%s %d\n", __FUNCTION__, __LINE__);
+	if(!g_pt_cur_page || !g_pt_cur_page->pt_next_page)
+	{
+		return -1;
+	}
+
+	DBG_PRINTF("%s %d, pos = 0x%x\n", __FUNCTION__, __LINE__, (unsigned int)g_pt_cur_page->pt_pre_page->puc_lcd_first_pos_file);
+	i_error = show_onepage(g_pt_cur_page->pt_pre_page->puc_lcd_first_pos_file);
+	if(i_error == 0)
+	{
+		DBG_PRINTF("%s %d\n", __FUNCTION__, __LINE__);
+		g_pt_cur_page = g_pt_cur_page->pt_pre_page;
+	}
+	return i_error;
 }
 
