@@ -158,10 +158,32 @@ int main(int argc, char **argv)
 
 	DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 	i_error = show_next_page();
-	
-	 
-	 	
+	DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+	if(i_error)
+	{
+		printf("error to show first page\n");
+		return -1;
+	}
 
+	printf("Enter 'n' to show next page, 'u' to show previous page, 'q' to exit :");
+
+	while(1)
+	{
+		if (get_input_event(&t_input_event) == 0)
+		if (t_input_event.i_val == INPUT_VALUE_DOWN)
+		{
+			show_next_page();
+		}
+		else if (t_input_event.i_val == INPUT_VALUE_UP)
+		{
+			show_pre_page();
+		}
+		else if(t_input_event.i_val == INPUT_VALUE_EXIT)
+		{
+			return 0;
+		}
+	}
+	return 0;
 	
 }
 

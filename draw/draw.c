@@ -76,7 +76,7 @@ int set_text_detail(char *pc_hzk_file, char *pc_file_freetype, unsigned int dw_f
 	PT_font_opr pt_tmp;
 	int iret = -1;
 
-	g_dw_font_size = dw_font_size;
+	g_dwfont_size = dw_font_size;
 	
 	pt_font_opr = g_pt_encoding_opr_for_file->pt_font_opr_supported_head;
 	while(pt_font_opr)
