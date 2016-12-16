@@ -12,8 +12,8 @@ typedef struct disp_opr {
 	struct disp_opr *pt_next;
 }T_disp_opr, *PT_disp_opr;
 
-int register_dispopr(PT_DispOpr pt_dispopr);
-void show_dispopr(void);
+int register_dispopr(PT_disp_opr pt_dispopr);
+void show_disp_opr(void);
 int display_init(void);
 int fb_init(void);
 

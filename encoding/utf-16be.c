@@ -3,11 +3,11 @@
 #include <string.h>
 
 static int is_utf16be_coding(unsigned char *puc_buf_head);
-static int utf16be_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char*puc_buf_end, unsigned char *puc_buf_end, unsigned int *pdw_code);
+static int utf16be_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char*puc_buf_end, unsigned int *pdw_code);
 
 static T_encoding_opr g_t_utf16be_encoding_opr = {
 	.name				= "utf-16be",
-	.iheadlen			= 2,
+	.ihead_len			= 2,
 	.is_support			= is_utf16be_coding,
 	.get_code_frmbuf	= utf16be_get_code_frmbuf,
 };
@@ -26,7 +26,7 @@ static int is_utf16be_coding(unsigned char *puc_buf_head)
 	}
 }
 
-static int utf16be_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char*puc_buf_end, unsigned char *puc_buf_end, unsigned int *pdw_code)
+static int utf16be_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char*puc_buf_end, unsigned int *pdw_code)
 {
 	if(puc_buf_start + 1 < puc_buf_end)
 	{

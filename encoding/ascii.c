@@ -10,7 +10,7 @@ static int ascii_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char *pu
 static T_encoding_opr g_t_ascii_encoding_opr = {
 	.name				= "ascii",
 	.ihead_len			= 0,
-	.is_spuuort			= is_ascii_support,
+	.is_support			= is_ascii_support,
 	.get_code_frmbuf 	= ascii_get_code_frmbuf,
 
 };
@@ -51,7 +51,7 @@ static int ascii_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char *pu
 		return 1;
 	}
 
-	if(((puc_buf + 1) < puc_buf_end) && (c > =(unsigned char)0x80))
+	if(((puc_buf + 1) < puc_buf_end) && (c >=(unsigned char)0x80))
 	{
 		/*·µ»ØGBKÂë*/
 		*pdw_code = puc_buf[0] + (((unsigned int)puc_buf[1])<<8);

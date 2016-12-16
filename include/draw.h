@@ -6,5 +6,7 @@ int set_text_detail(char *pc_hzk_file, char *pc_file_free_type, unsigned int dw_
 int select_and_init_display(char *pc_name);
 int show_next_page(void);
 int show_pre_page(void);
+int get_disp_resolution(int *pi_xres, int *pi_yres);
+
 
 #endif /*_DRAW_H*/

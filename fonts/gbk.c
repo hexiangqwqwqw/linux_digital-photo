@@ -36,19 +36,19 @@ static int gbk_font_init(char *pc_font_file, unsigned int dw_font_size)
 	}
 	if(fstat(g_ifd_hzk, &t_stat))
 	{
-		DBG_PRINT("cant get fstat\n");
+		DBG_PRINTF("cant get fstat\n");
 		return -1;
 	}
 
-	g_puc_hzk_mem = (unsigned char *)mmap(NULL, t_stat.size, PROT_READ, MAP_SHARED, g_ifd_hzk, 0);
+	g_puc_hzk_mem = (unsigned char *)mmap(NULL, t_stat.st_size, PROT_READ, MAP_SHARED, g_ifd_hzk, 0);
 	if(g_puc_hzk_mem == (unsigned char *) -1)
 	{
 		DBG_PRINTF("cant mmap for hzk16\n");
 		return -1;
 	}
 
-	g_puc_hzk_mem_end = g_puc_hzk_mem + t_stat.size;
-	return 0
+	g_puc_hzk_mem_end = g_puc_hzk_mem + t_stat.st_size;
+	return 0;
 		
 }
 
@@ -82,7 +82,7 @@ static int gbk_get_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bi
 	pt_font_bit_map->ix_max		= ipenx + 16;
 	pt_font_bit_map->iy_max		= ipeny;
 	pt_font_bit_map->ibpp		= 1;
-	pt_font_bit_map->pitch		= 2;
+	pt_font_bit_map->ipitch		= 2;
 	pt_font_bit_map->puc_buffer = g_puc_hzk_mem + (iarea * 94 + iwhere) * 32;
 
 	if(pt_font_bit_map->puc_buffer >= g_puc_hzk_mem_end)
@@ -97,7 +97,7 @@ static int gbk_get_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bi
 	return 0;	
 }
 
-int gpk_init(void)
+int gbk_init(void)
 {
 	return register_font_opr(&g_t_gpk_font_opr);
 }

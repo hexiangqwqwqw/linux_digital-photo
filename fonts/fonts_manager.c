@@ -1,5 +1,7 @@
 #include <fonts_manager.h>
+#include <config.h>
 #include <string.h>
+#include <stdio.h>
 
 static PT_font_opr g_pt_font_opr_head;
 int register_font_opr(PT_font_opr pt_font_opr)
@@ -19,7 +21,7 @@ int register_font_opr(PT_font_opr pt_font_opr)
 			pt_tmp = pt_tmp->pt_next;
 		}
 		pt_tmp->pt_next = pt_font_opr;
-		pt_font_opr->next = NULL;
+		pt_font_opr->pt_next = NULL;
 		
 	}
 
@@ -33,7 +35,7 @@ void show_font_opr(void)
 	while(pt_tmp)
 	{
 		printf("%02d %s\n", i++, pt_tmp->name);
-		pt_tmp = pt_tmp->pt->next;
+		pt_tmp = pt_tmp->pt_next;
 	}
 }
 
@@ -59,21 +61,21 @@ int fonts_init(void)
 	ierror = ascll_init();
 	if(ierror)
 	{
-		DEG_PRINTF("ascll_init error!\n");
+		DBG_PRINTF("ascll_init error!\n");
 		return -1;
 	}
 
 	ierror = gbk_init();
 	if(ierror)
 	{
-		DEG_PRINTF("gbk_init error!\n");
+		DBG_PRINTF("gbk_init error!\n");
 		return -1;
 	}
 
 	ierror = freetype_init();
 	if(ierror)
 	{
-		DEG_PRINTF("freetype_init error!\n");
+		DBG_PRINTF("freetype_init error!\n");
 		return -1;
 	}
 

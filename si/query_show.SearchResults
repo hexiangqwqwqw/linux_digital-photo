@@ -1,3 +1,2 @@
----- display_init Matches (2 in 2 files) ----
-Disp_manager.h (e:\1_shumaxiangkuang\linux_digital-photo\include):int display_init(void);
-Main.c (e:\1_shumaxiangkuang\linux_digital-photo):	 i_error = display_init();
+---- set text file error! Matches (1 in 1 files) ----
+Main.c (e:\1_shumaxiangkuang\linux_digital-photo):	 	printf("set text file error!\n");

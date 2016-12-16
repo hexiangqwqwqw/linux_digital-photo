@@ -5,12 +5,12 @@
 #include FT_GLYPH_H
 
 static int freetype_font_init(char *pc_font_file, unsigned int dw_font_size);
-static int freetype_get_font_bitmap(unsigned int dw_code, PT_font_bitmap pt_font_bitmap);
+static int freetype_get_font_bitmap(unsigned int dw_code, PT_font_bit_map pt_font_bitmap);
 
 static T_font_opr g_t_freetype_font_opr = {
 	.name				= "freetype",
 	.font_init			= freetype_font_init,
-	.get_font_bitmap	= freetype_get_font_bitmap,
+	.get_font_bit_map	= freetype_get_font_bitmap,
 };
 
 static FT_Library g_t_library;
@@ -22,7 +22,7 @@ static int freetype_font_init(char *pc_font_file, unsigned int dw_font_size)
 	int i_error;
 
 	/*ÏÔÊ¾Ê¸Á¿×ÖÌå*/
-	i_error = FT_INIT_FreeType(g_t_library);
+	i_error = FT_Init_FreeType(g_t_library);
 	/*error handing omitted*/
 	if(i_error)
 	{
@@ -43,7 +43,7 @@ static int freetype_font_init(char *pc_font_file, unsigned int dw_font_size)
 	i_error = FT_Set_Pixel_Sizes(g_t_face, dw_font_size, 0);
 	if(i_error)
 	{
-		DGB_PRINTF("FT_Set_Pixel_Sizes failed: %d\n", dw_font_size);
+		DBG_PRINTF("FT_Set_Pixel_Sizes failed: %d\n", dw_font_size);
 		return -1;
 	}
 
@@ -51,7 +51,7 @@ static int freetype_font_init(char *pc_font_file, unsigned int dw_font_size)
 	
 }
 
-static int freetype_get_font_bitmap(unsigned int dw_code, PT_font_bitmap pt_font_bitmap)
+static int freetype_get_font_bitmap(unsigned int dw_code, PT_font_bit_map pt_font_bitmap)
 {
 	int i_error;
 	int i_penx = pt_font_bitmap->icur_originx;
@@ -66,7 +66,7 @@ static int freetype_get_font_bitmap(unsigned int dw_code, PT_font_bitmap pt_font
 
 	pt_font_bitmap->ix_left	= i_penx + g_t_slot->bitmap_left;
 	pt_font_bitmap->iy_top	= i_peny + g_t_slot->bitmap_top;
-	pt_font_bitmap->ixmax	= pt_font_bitmap->ix_max + g_t_slot->bitmap.width;
+	pt_font_bitmap->ix_max	= pt_font_bitmap->ix_max + g_t_slot->bitmap.width;
 	pt_font_bitmap->iy_max	= pt_font_bitmap->iy_top+ g_t_slot->bitmap.rows;
 	pt_font_bitmap->ibpp	= 1;
 	pt_font_bitmap->ipitch	= g_t_slot->bitmap.pitch;

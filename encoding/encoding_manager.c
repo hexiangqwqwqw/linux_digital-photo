@@ -1,6 +1,9 @@
 #include <encoding_manager.h>
+#include <config.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 
 
 static PT_encoding_opr g_pt_encoding_opr_head;
@@ -87,7 +90,7 @@ int del_font_opr_frm_dncoding(PT_encoding_opr pt_encoding_opr, PT_font_opr pt_fo
 	}
 	else
 	{
-		pt_tmp = pt_encoding_opr->pt_font_opr_supported_heaad;
+		pt_tmp = pt_encoding_opr->pt_font_opr_supported_head;
 		if(strcmp(pt_tmp->name, pt_font_opr->name)==0)
 		{
 			/*É¾³ý½Úµã*/
@@ -97,7 +100,7 @@ int del_font_opr_frm_dncoding(PT_encoding_opr pt_encoding_opr, PT_font_opr pt_fo
 		}
 	
 
-		pt_pre = pt_encoding_opr->pt_encoding_opr_supported_head;
+		pt_pre = pt_encoding_opr->pt_font_opr_supported_head;
 		pt_tmp = pt_pre->pt_next;
 
 		while(pt_tmp)
@@ -124,31 +127,31 @@ int encoding_init(void)
 {
 	int ierror;
 
-	ierror = ascii_encoding_init(void);
+	ierror = ascii_encoding_init();
 	if(ierror)
 	{
-		DGB_PRINTF("ascii encoding init error!\n");
+		DBG_PRINTF("ascii encoding init error!\n");
 		return -1;
 	}
 
-	ierror = utf16le_encoding_init(void);
+	ierror = utf16le_encoding_init();
 	if(ierror)
 	{
-		DGB_PRINTF("utf16le encoding init error!\n");
+		DBG_PRINTF("utf16le encoding init error!\n");
 		return -1;
 	}
 
-	ierror = utf16be_encoding_init(void);
+	ierror = utf16be_encoding_init();
 	if(ierror)
 	{
-		DGB_PRINTF("utf16be encoding init error!\n");
+		DBG_PRINTF("utf16be encoding init error!\n");
 		return -1;
 	}
 
-	ierror = utf8_encoding_init(void);
+	ierror = utf8_encoding_init();
 	if(ierror)
 	{
-		DGB_PRINTF("utf8 encoding init error!\n");
+		DBG_PRINTF("utf8 encoding init error!\n");
 		return -1;
 	}
 

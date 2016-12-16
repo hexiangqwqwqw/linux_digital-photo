@@ -1,7 +1,7 @@
 #include <config.h>
 #include <input_manager.h>
 #include <stdlib.h>
-
+#include <draw.h>
 #include <tslib.h>
 
 /* ²Î¿¼tslibÀïµÄts_print.c */
@@ -20,7 +20,7 @@ static int touch_screendev_init(void)
 	}
 	else
 	{
-		g_t_tsdev = ts_open("/dev/event0");
+		g_t_tsdev = ts_open("/dev/event0", 1);
 	}
 	if(!g_t_tsdev)
 	{
@@ -95,7 +95,7 @@ static int touch_screendev_get_inputevent(PT_input_event pt_input_event)
 	else
 	{
 		return -1;
-	}]
+	}
 	return 0;
 	
 }

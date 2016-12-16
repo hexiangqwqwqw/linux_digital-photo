@@ -1,10 +1,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <config.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <config.h>
+#include <draw.h>
 #include <encoding_manager.h>
+#include <fonts_manager.h>
+#include <disp_manager.h>
+#include <string.h>
 
 
 
@@ -35,27 +39,27 @@ int open_text_file(char *pc_file_name)
 {
 	struct stat t_stat;
 
-	g_ifd_text_file = open(pc_file_name, ORDONLY);
+	g_ifd_text_file = open(pc_file_name, O_RDONLY);
 	if(g_ifd_text_file < 0)
 	{
-		DGB_PRINTF("cant open text file %s\n", pc_file_name);
+		DBG_PRINTF("cant open text file %s\n", pc_file_name);
 		return -1;
 	}
 
 	if(fstat(g_ifd_text_file, &t_stat))
 	{
-		DGB_PIRNTF("cant get fstat\n");
+		DBG_PRINTF("cant get fstat\n");
 		return -1;
 	}
 
-	g_puc_text_file_mem = (unsigned char *)mmap(NULL, t_stat.size, PROT_READ, MAP_SHARED, g_ifd_text_file, 0);
+	g_puc_text_file_mem = (unsigned char *)mmap(NULL, t_stat.st_size, PROT_READ, MAP_SHARED, g_ifd_text_file, 0);
 	if(g_puc_text_file_mem == (unsigned char *)-1)
 	{
 		DBG_PRINTF("cant mmap for text file\n");
 		return -1;
 	}
 
-	g_puc_text_file_mem_end = g_puc_text_file_mem + t_stat.size;
+	g_puc_text_file_mem_end = g_puc_text_file_mem + t_stat.st_size;
 	g_pt_encoding_opr_for_file = select_encoding_opr_for_file(g_puc_text_file_mem);
 
 	if(g_pt_encoding_opr_for_file)
@@ -99,20 +103,25 @@ int set_text_detail(char *pc_hzk_file, char *pc_file_freetype, unsigned int dw_f
 
 		if(ierror == 0)
 		{
+			/* 比如对于ascii编码的文件, 可能用ascii字体也可能用gbk字体, 
+			 * 所以只要有一个FontInit成功, SetTextDetail最终就返回成功
+			 */
 			iret = 0;
 		}
 		else
 		{
-			del_font_opr_frm_encoding()
+			del_font_opr_frm_dncoding(g_pt_encoding_opr_for_file, pt_font_opr);
 		}
+		pt_font_opr = pt_tmp;
 	}
+	return iret;
 }
 
 
-int select_initdisplay(char *pc_name)
+int select_and_init_display(char *pc_name)
 {
 	int i_error;
-	g_pt_disp_opr = get_disp_opr(pc_name)
+	g_pt_disp_opr = get_disp_opr(pc_name);
 	if(!g_pt_disp_opr)
 	{
 		return -1;
@@ -147,12 +156,12 @@ int intc_lcdx(int ix)
 int intc_lcdy(int iy)
 {
 	if(iy+g_dwfont_size < g_pt_disp_opr->iyres)
-		return (iy+g_dwfont_size)
+		return (iy+g_dwfont_size);
 	else
 		return 0;
 }
 
-int relocate_fontpos(PT_font_bitmap pt_font_bitmap)
+int relocate_fontpos(PT_font_bit_map pt_font_bitmap)
 {
 	int i_lcdy;
 	int i_deltax;
@@ -193,12 +202,12 @@ int relocate_fontpos(PT_font_bitmap pt_font_bitmap)
 	return 0;
 }
 
-int show_onefont(PT_font_bitmap pt_font_bitmap)
+int show_onefont(PT_font_bit_map pt_font_bitmap)
 {
 	int ix;
 	int iy;
 	unsigned char  uc_byte = 0;
-	int i;
+	int i = 0;
 	int i_bit;
 
 	if (pt_font_bitmap->ibpp == 1)
@@ -210,7 +219,7 @@ int show_onefont(PT_font_bitmap pt_font_bitmap)
 			{
 				if(i_bit == 7)
 				{
-					uc_byte = pt_font_bitmap->puc_buffer[i++]
+					uc_byte = pt_font_bitmap->puc_buffer[i++];
 				}
 				if(uc_byte & (1 << i_bit))
 				{
@@ -251,9 +260,9 @@ int show_onepage(unsigned char *puc_textfile_memcur_pos)
 	int i_len;
 	int i_error;
 	unsigned char *puc_buf_start;
-	unsigned char int dw_code;
+	unsigned int  dw_code;
 	PT_font_opr	pt_font_opr;
-	PT_font_bitmap t_font_bitmap;
+	T_font_bit_map t_font_bitmap;
 
 	int i_has_not_clrscreen = 1;
 	int i_has_get_code =0;
@@ -296,11 +305,11 @@ int show_onepage(unsigned char *puc_textfile_memcur_pos)
 				continue;
 			}
 		}
-		else if (dw_code == "\r")
+		else if (dw_code == '\r')
 		{
 				continue;
 		}
-		else if(dw_code == "\t")
+		else if(dw_code == '\t')
 		{
 			dw_code = ' ';
 		}
@@ -311,7 +320,7 @@ int show_onepage(unsigned char *puc_textfile_memcur_pos)
 		while(pt_font_opr)
 		{
 			DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
-			i_error = pt_font_opr->get_fontbitmap(dw_code, &t_font_bitmap);
+			i_error = pt_font_opr->get_font_bit_map(dw_code, &t_font_bitmap);
 			DBG_PRINTF("%s %s %d, pt_font_opr->name = %s. %d\n", __FILE__, __FUNCTION__, __LINE__, pt_font_opr->name, i_error);
 
 			if(i_error == 0)

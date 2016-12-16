@@ -1,5 +1,7 @@
 #include <fonts_manager.h>
 
+#define FONTDATAMAX 4096
+
 static int ascll_font_init(char *pc_font_file, unsigned int dw_fontf_size);
 static int ascll_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bit_map);
 
@@ -4624,7 +4626,7 @@ static const unsigned char fontdata_8x16[FONTDATAMAX] = {
 };
 
 
-static int ascll_font_init(char *pc_font_file, unsigned int dw_fontf_size)
+static int ascll_font_init(char *pc_font_file, unsigned int dw_font_size)
 {
 	if(dw_font_size != 16)
 	{
@@ -4649,7 +4651,7 @@ static int ascll_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bit_
 	pt_font_bit_map->iy_max		= ipeny;
 	pt_font_bit_map->ibpp		= 1;
 	pt_font_bit_map->ipitch		= 1;
-	pt_font_bit_map->pucbuffer	= (unsigned char *)&fontdata_8x16[dwCode * 16];
+	pt_font_bit_map->puc_buffer	= (unsigned char *)&fontdata_8x16[dw_code * 16];
 
 	pt_font_bit_map->inext_originx = ipenx+8;
 	pt_font_bit_map->inext_originy = ipeny;
@@ -4659,5 +4661,5 @@ static int ascll_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bit_
 
 int ascll_init(void)
 {
-	register_font_opr(&g_t_ascll_font_opr);
+	return register_font_opr(&g_t_ascll_font_opr);
 }

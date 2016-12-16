@@ -13,7 +13,7 @@
 int main(int argc, char **argv)
 {
 	int i_error;
-	unsigned int dw_fontsize;
+	unsigned int dw_fontsize = 16;
 	char ac_hzk_file[128];
 	char ac_freetypefile[128];
 	char ac_textfile[128];
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 			}
 			case 's':
 			{
-				dw_font_size = stroul(optarg, NULL, 0);
+				dw_fontsize = strtoul(optarg, NULL, 0);
 				break;
 			}
 			case 'f':
@@ -65,13 +65,13 @@ int main(int argc, char **argv)
 			default :
 			{
 				printf("Usage: %s [-s size] [-d display] [-f font_file] [-h hzk] <text_file>\n",argv[0]);
-				printf("Usage: %s -l\n" argv[0]);
+				printf("Usage: %s -l\n", argv[0]);
 				return -1;
 				break;
 			}
 		}
 	 }
-	 if(&b_list && (optind >= argc))
+	 if(!b_list && (optind >= argc))
 	 {
 		printf("Usage: %s [-s size] [-d display] [-f font_file] [-h hzk] <text_file>\n",argv[0]);
 		printf("Usage: %s -l\n", argv[0]);
@@ -170,17 +170,19 @@ int main(int argc, char **argv)
 	while(1)
 	{
 		if (get_input_event(&t_input_event) == 0)
-		if (t_input_event.i_val == INPUT_VALUE_DOWN)
 		{
-			show_next_page();
-		}
-		else if (t_input_event.i_val == INPUT_VALUE_UP)
-		{
-			show_pre_page();
-		}
-		else if(t_input_event.i_val == INPUT_VALUE_EXIT)
-		{
-			return 0;
+			if (t_input_event.i_val == INPUT_VALUE_DOWN)
+			{
+				show_next_page();
+			}
+			else if (t_input_event.i_val == INPUT_VALUE_UP)
+			{
+				show_pre_page();
+			}
+			else if(t_input_event.i_val == INPUT_VALUE_EXIT)
+			{
+				return 0;
+			}
 		}
 	}
 	return 0;

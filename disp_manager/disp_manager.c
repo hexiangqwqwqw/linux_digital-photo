@@ -1,10 +1,12 @@
 #include <disp_manager.h>
+#include <stdio.h>
+#include <string.h>
 
-static PT_DispOpr g_pt_dispopr_head;
+static PT_disp_opr g_pt_dispopr_head;
 
-int register_dispopr(PT_DispOpr pt_dispopr)
+int register_dispopr(PT_disp_opr pt_dispopr)
 {
-	PT_DispOpr pt_tmp;
+	PT_disp_opr pt_tmp;
 
 	if(!g_pt_dispopr_head){
 		

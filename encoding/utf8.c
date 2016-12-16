@@ -14,7 +14,7 @@ static T_encoding_opr g_t_utf8_encoding_opr = {
 
 static int is_utf8_encoding(unsigned char *puc_buf_head)
 {
-	const char a_str_utf8[] = {0xef, 0xbb 0xbf, 0};
+	const char a_str_utf8[] = {0xef, 0xbb, 0xbf, 0};
 	if(strncmp((const char *)puc_buf_head, a_str_utf8, 3) == 0)
 	{
 		return 1;
@@ -25,16 +25,45 @@ static int is_utf8_encoding(unsigned char *puc_buf_head)
 	}
 }
 
+/* 获得前导为1的位的个数
+ * 比如二进制数 11001111 的前导1有2位
+ *              11100001 的前导1有3位
+ */
+static int get_pre_one_bits(unsigned char ucVal)
+{
+	int i;
+	int j = 0;
+	
+	for (i = 7; i >= 0; i--)
+	{
+		if (!(ucVal & (1<<i)))
+			break;
+		else
+			j++;
+	}
+	return j;
+
+}
+
 
 static int utf8_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char * puc_buf_end, unsigned int *pdw_code)
 {
 	int i;
 	int inum;
 	unsigned char uc_val;
-	unsigned int dw_sum;
+	unsigned int dw_sum = 0;
 
 	if(puc_buf_start >= puc_buf_end)
 	{
+		return 0;
+	}
+
+	uc_val = puc_buf_start[0];
+	inum = get_pre_one_bits(puc_buf_start[0]);
+
+	if((puc_buf_start + inum) > puc_buf_end)
+	{
+		/*文件结束*/
 		return 0;
 	}
 
