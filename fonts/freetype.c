@@ -22,7 +22,7 @@ static int freetype_font_init(char *pc_font_file, unsigned int dw_font_size)
 	int i_error;
 
 	/*ÏÔÊ¾Ê¸Á¿×ÖÌå*/
-	i_error = FT_Init_FreeType(g_t_library);
+	i_error = FT_Init_FreeType(&g_t_library);
 	/*error handing omitted*/
 	if(i_error)
 	{

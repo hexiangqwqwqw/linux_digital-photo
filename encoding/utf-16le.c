@@ -40,7 +40,7 @@ static int utf16le_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char *
 
 int utf16le_encoding_init(void)
 {
-	add_font_opr_for_encoding(&g_t_utf16le_encoding_opr, get_font_opr("fretype"));
+	add_font_opr_for_encoding(&g_t_utf16le_encoding_opr, get_font_opr("freetype"));
 	add_font_opr_for_encoding(&g_t_utf16le_encoding_opr, get_font_opr("ascii"));
 	return register_encoding_opr(&g_t_utf16le_encoding_opr);
 }

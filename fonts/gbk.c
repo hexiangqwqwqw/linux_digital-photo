@@ -25,7 +25,7 @@ static int gbk_font_init(char *pc_font_file, unsigned int dw_font_size)
 	
 	if(dw_font_size != 16)
 	{
-		DBG_PRINTF("gbk cant support %d fontsize\n", pc_font_file);
+		DBG_PRINTF("gbk cant support %d fontsize\n", dw_font_size);
 		return -1;
 	}
 	 g_ifd_hzk = open(pc_font_file, O_RDONLY);
@@ -72,7 +72,7 @@ static int gbk_get_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bi
 
 	if((iarea < 0) || (iwhere < 0))
 	{
-		DBG_PRINTF("%s %s %d\n", __FILE__, FUNCTION__, __LINE__);
+		DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 
 		return -1;
 	}
@@ -93,7 +93,7 @@ static int gbk_get_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bi
 	pt_font_bit_map->inext_originx = ipenx + 16;
 	pt_font_bit_map->inext_originy = ipeny;
 
-	DBG_PRINTF("%s %s %d\n", __FILE__, FUNCTION__, __LINE__);
+	DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 	return 0;	
 }
 

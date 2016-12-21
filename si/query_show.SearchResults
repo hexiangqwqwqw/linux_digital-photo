@@ -1,2 +1,2 @@
----- set text file error! Matches (1 in 1 files) ----
+---- set text file error Matches (1 in 1 files) ----
 Main.c (e:\1_shumaxiangkuang\linux_digital-photo):	 	printf("set text file error!\n");

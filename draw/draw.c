@@ -88,10 +88,12 @@ int set_text_detail(char *pc_hzk_file, char *pc_file_freetype, unsigned int dw_f
 		if(strcmp(pt_font_opr->name, "ascii") == 0)
 		{
 			ierror = pt_font_opr->font_init(NULL, dw_font_size);
+			DBG_PRINTF("1 %s, %d\n", pt_font_opr->name, ierror);
 		}
 		else if(strcmp(pt_font_opr->name, "gbk")==0)
 		{
 			ierror = pt_font_opr->font_init(pc_hzk_file, dw_font_size);
+			DBG_PRINTF("2 %s, %d\n", pt_font_opr->name, ierror);
 		}
 		else
 		{
@@ -325,7 +327,7 @@ int show_onepage(unsigned char *puc_textfile_memcur_pos)
 
 			if(i_error == 0)
 			{
-				DBG_PRINTF("%s %s %d\n", __FILE__, FUNCTION__, __LINE__);
+				DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 				if(relocate_fontpos(&t_font_bitmap))
 				{
 					return 0;

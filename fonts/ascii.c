@@ -1,4 +1,5 @@
 #include <fonts_manager.h>
+#include <config.h>
 
 #define FONTDATAMAX 4096
 
@@ -4630,6 +4631,7 @@ static int ascll_font_init(char *pc_font_file, unsigned int dw_font_size)
 {
 	if(dw_font_size != 16)
 	{
+		DBG_PRINTF("ASCII can't support %d font size\n", dw_font_size);
 		return -1;
 	}
 	return 0;

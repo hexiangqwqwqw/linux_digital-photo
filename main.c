@@ -61,6 +61,7 @@ int main(int argc, char **argv)
 			{
 				strncpy(ac_display, optarg, 128);
 				ac_display[127] = '\0';
+				break;
 			}
 			default :
 			{
@@ -129,7 +130,7 @@ int main(int argc, char **argv)
 	 i_error = open_text_file(ac_textfile);
 	 if(i_error)
 	 {
-		printf("open text ifle error!\n");
+		printf("open text file error!\n");
 		return -1;
 	 }
 
