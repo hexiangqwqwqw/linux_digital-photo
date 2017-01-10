@@ -9,8 +9,8 @@
 static int gbk_font_init(char *pc_font_file, unsigned int dw_font_size);
 static int gbk_get_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bit_map);
 
-static T_font_opr g_t_gpk_font_opr = {
-	.name				= "gpk",
+static T_font_opr g_t_gbk_font_opr = {
+	.name				= "gbk",
 	.font_init			= gbk_font_init,
 	.get_font_bit_map	= gbk_get_font_bit_map,
 };
@@ -99,5 +99,5 @@ static int gbk_get_font_bit_map(unsigned int dw_code, PT_font_bit_map pt_font_bi
 
 int gbk_init(void)
 {
-	return register_font_opr(&g_t_gpk_font_opr);
+	return register_font_opr(&g_t_gbk_font_opr);
 }

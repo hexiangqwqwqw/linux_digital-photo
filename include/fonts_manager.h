@@ -8,7 +8,7 @@ typedef struct font_bit_map {
 		int ix_max;
 		int iy_max;
 		int ibpp;
-		int ipitch;
+		int ipitch;			/* 对于单色位图, 两行象素之间的跨度 */
 		int icur_originx;
 		int icur_originy;
 		int inext_originx;

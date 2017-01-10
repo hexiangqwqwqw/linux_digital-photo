@@ -3,7 +3,7 @@
 #include <string.h>
 
 static int is_utf8_encoding(unsigned char *puc_buf_head);
-static int utf8_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char * puc_buf_end, unsigned int *pdw_code);
+static int utf8_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char *puc_buf_end, unsigned int *pdw_code);
 
 static T_encoding_opr g_t_utf8_encoding_opr = {
 	.name				= "utf8",
@@ -46,7 +46,7 @@ static int get_pre_one_bits(unsigned char ucVal)
 }
 
 
-static int utf8_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char * puc_buf_end, unsigned int *pdw_code)
+static int utf8_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char *puc_buf_end, unsigned int *pdw_code)
 {
 	int i;
 	int inum;
@@ -55,6 +55,7 @@ static int utf8_get_code_frmbuf(unsigned char *puc_buf_start, unsigned char * pu
 
 	if(puc_buf_start >= puc_buf_end)
 	{
+		/* ÎÄ¼ş½áÊø */
 		return 0;
 	}
 

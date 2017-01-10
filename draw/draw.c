@@ -16,8 +16,8 @@ typedef struct page_desc {
 	int ipage;
 	unsigned char *puc_lcd_first_pos_file;
 	unsigned char *puc_lcd_next_page_first_pos_file;
-	struct page_desc *pt_next_page;
 	struct page_desc *pt_pre_page;
+	struct page_desc *pt_next_page;
 } T_page_desc, *PT_page_desc;
 
 static int g_ifd_text_file;
@@ -28,7 +28,7 @@ static PT_encoding_opr g_pt_encoding_opr_for_file;
 static PT_disp_opr g_pt_disp_opr;
 
 static unsigned char *g_puc_lcd_first_posat_file;
-static unsigned char *g_puc_lcd_next_possat_file;
+static unsigned char *g_puc_lcd_next_posat_file;
 
 static int g_dwfont_size;
 
@@ -183,7 +183,7 @@ int relocate_fontpos(PT_font_bit_map pt_font_bitmap)
 		}
 		else
 		{
-			i_deltax = 0-pt_font_bitmap->icur_originx;
+			i_deltax = 0 - pt_font_bitmap->icur_originx;
 			i_deltay = i_lcdy - pt_font_bitmap->icur_originy;
 
 			pt_font_bitmap->icur_originx += i_deltax;
@@ -292,9 +292,13 @@ int show_onepage(unsigned char *puc_textfile_memcur_pos)
 
 		puc_buf_start += i_len;
 
+		/* 有些文本, \n\r两个一起才表示回车换行
+		 * 碰到这种连续的\n\r, 只处理一次
+		 */
+
 		if(dw_code == '\n')
 		{
-			g_puc_lcd_next_possat_file = puc_buf_start;
+			g_puc_lcd_next_posat_file = puc_buf_start;
 
 			t_font_bitmap.icur_originx = 0;
 			t_font_bitmap.icur_originy = intc_lcdy(t_font_bitmap.icur_originy);
@@ -347,8 +351,8 @@ int show_onepage(unsigned char *puc_textfile_memcur_pos)
 				}
 
 				t_font_bitmap.icur_originx = t_font_bitmap.inext_originx;
-				t_font_bitmap.icur_originx = t_font_bitmap.inext_originy;
-				g_puc_lcd_next_possat_file = puc_buf_start;
+				t_font_bitmap.icur_originy = t_font_bitmap.inext_originy;
+				g_puc_lcd_next_posat_file = puc_buf_start;
 
 				break;
 			}
@@ -402,25 +406,25 @@ int show_next_page(void)
 			g_pt_cur_page = g_pt_cur_page->pt_next_page;
 			return 0;
 		}
-	}
+	
 
-	pt_page = malloc(sizeof(T_page_desc));
-	if(pt_page)
-	{
-		pt_page->puc_lcd_first_pos_file		        = puc_text_file_mem_curpos;
-		pt_page->puc_lcd_next_page_first_pos_file	= g_puc_lcd_next_possat_file;
-		pt_page->pt_pre_page						= NULL;
-		pt_page->pt_next_page						= NULL;
-		g_pt_cur_page = pt_page;
-		DBG_PRINTF("%s %d, pos = 0x%x\n", __FUNCTION__, __LINE__, (unsigned int)pt_page->puc_lcd_first_pos_file);
-		record_page(pt_page);
-		return 0;
+		pt_page = malloc(sizeof(T_page_desc));
+		if(pt_page)
+		{
+			pt_page->puc_lcd_first_pos_file		        = puc_text_file_mem_curpos;
+			pt_page->puc_lcd_next_page_first_pos_file	= g_puc_lcd_next_posat_file;
+			pt_page->pt_pre_page						= NULL;
+			pt_page->pt_next_page						= NULL;
+			g_pt_cur_page = pt_page;
+			DBG_PRINTF("%s %d, pos = 0x%x\n", __FUNCTION__, __LINE__, (unsigned int)pt_page->puc_lcd_first_pos_file);
+			record_page(pt_page);
+			return 0;
+		}
+		else
+		{
+			return -1;
+		}
 	}
-	else
-	{
-		return -1;
-	}
-
 	return i_error;
 }
 

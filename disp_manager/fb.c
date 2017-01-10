@@ -90,7 +90,7 @@ static int fb_show_pixel(int ix, int iy, unsigned int dw_color)
 		return -1;
 	}
 
-	puc_fb = g_puc_fbmem + g_dw_linewidth *iy +g_dw_pixelwidth * ix;
+	puc_fb = g_puc_fbmem + g_dw_linewidth *iy + g_dw_pixelwidth * ix;
 	pw_fb16bpp = (unsigned short *)puc_fb;
 	pdw_fb32bpp = (unsigned int *)puc_fb;
 
@@ -98,7 +98,7 @@ static int fb_show_pixel(int ix, int iy, unsigned int dw_color)
 	{
 		case 8:
 		{
-			*puc_fb = dw_color;
+			*puc_fb = (unsigned char)dw_color;
 			break;
 		}
 		case 16:
@@ -106,7 +106,7 @@ static int fb_show_pixel(int ix, int iy, unsigned int dw_color)
 			ired = (dw_color >> (16+3)) & 0x1f;
 			igreen = (dw_color >> (8+2)) & 0x3f;
 			iblue = (dw_color >>3) & 0x1f;
-			w_color_16bpp = (ired >> 11) | (igreen >> 5) | iblue;
+			w_color_16bpp = (ired << 11) | (igreen << 5) | iblue;
 			*pw_fb16bpp = w_color_16bpp;
 			break;
 		}

@@ -63,16 +63,16 @@ static int freetype_get_font_bitmap(unsigned int dw_code, PT_font_bit_map pt_fon
 		DBG_PRINTF("FT_Load_Char error for code : 0x%x\n", dw_code);
 		return -1;
 	}
+	DBG_PRINTF("iPenX = %d, iPenY = %d, bitmap_left = %d, bitmap_top = %d, width = %d, rows = %d\n", i_penx, i_peny, g_t_slot->bitmap_left, g_t_slot->bitmap_top, g_t_slot->bitmap.width, g_t_slot->bitmap.rows);
+	pt_font_bitmap->ix_left		= i_penx + g_t_slot->bitmap_left;
+	pt_font_bitmap->iy_top		= i_peny - g_t_slot->bitmap_top;
+	pt_font_bitmap->ix_max		= pt_font_bitmap->ix_left + g_t_slot->bitmap.width;
+	pt_font_bitmap->iy_max		= pt_font_bitmap->iy_top + g_t_slot->bitmap.rows;
+	pt_font_bitmap->ibpp		= 1;
+	pt_font_bitmap->ipitch		= g_t_slot->bitmap.pitch;
+	pt_font_bitmap->puc_buffer 	= g_t_slot->bitmap.buffer;
 
-	pt_font_bitmap->ix_left	= i_penx + g_t_slot->bitmap_left;
-	pt_font_bitmap->iy_top	= i_peny + g_t_slot->bitmap_top;
-	pt_font_bitmap->ix_max	= pt_font_bitmap->ix_max + g_t_slot->bitmap.width;
-	pt_font_bitmap->iy_max	= pt_font_bitmap->iy_top+ g_t_slot->bitmap.rows;
-	pt_font_bitmap->ibpp	= 1;
-	pt_font_bitmap->ipitch	= g_t_slot->bitmap.pitch;
-	pt_font_bitmap->puc_buffer = g_t_slot->bitmap.buffer;
-
-	pt_font_bitmap->inext_originx = i_penx + g_t_slot->advance.x / 64;
+	pt_font_bitmap->inext_originx = i_penx + g_t_slot->advance.x/64;
 	pt_font_bitmap->inext_originy = i_peny;
 
 	return 0;
