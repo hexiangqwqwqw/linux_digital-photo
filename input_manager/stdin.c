@@ -49,45 +49,32 @@ static int stdin_get_input_event(PT_input_event pt_input_event)
 	/*select poll */
 
 	struct timeval t_tv;
-	fd_set t_fds;
 	char c;
 
-	t_tv.tv_sec = 0;
-	t_tv.tv_sec = 0;
-	FD_ZERO(&t_fds);
+	/*处理数据*/
+	pt_input_event->i_type = INPUT_TYPE_STDIN;
 
-	FD_SET(STDIN_FILENO, &t_fds);
-	select(STDIN_FILENO+1, &t_fds, NULL, NULL, &t_tv);
 
-	if(FD_ISSET(STDIN_FILENO, &t_fds))
+	c = fgetc(stdin);	/*如果没有数据，会休眠	*/
+	gettimeofday(&pt_input_event->t_time, NULL);
+	if(c == 'u')
 	{
-		/*处理数据*/
-		pt_input_event->i_type = INPUT_TYPE_STDIN;
-		gettimeofday(&pt_input_event->t_time, NULL);
-
-		c = fgetc(stdin);
-		if(c == 'u')
-		{
-			pt_input_event->i_val = INPUT_VALUE_UP;
-		}
-		else if(c == 'n')
-		{
-			pt_input_event->i_val = INPUT_VALUE_DOWN;
-		}
-		else if (c == 'q')
-		{
-			pt_input_event->i_val = INPUT_VALUE_EXIT;
-		}
-		else
-		{
-			pt_input_event->i_val = INPUT_VALUE_UNKNOWN;
-		}
-		return 0;
+		pt_input_event->i_val = INPUT_VALUE_UP;
+	}
+	else if(c == 'n')
+	{
+		pt_input_event->i_val = INPUT_VALUE_DOWN;
+	}
+	else if (c == 'q')
+	{
+		pt_input_event->i_val = INPUT_VALUE_EXIT;
 	}
 	else
 	{
-		return -1;
+		pt_input_event->i_val = INPUT_VALUE_UNKNOWN;
 	}
+	return 0;
+	
 }
 
 static T_input_opr g_t_input_opr = {

@@ -16,7 +16,7 @@ static int touch_screendev_init(void)
 	char *pc_tsname = NULL;
 	if((pc_tsname = getenv("TSLIB_TSDEVICE")) != NULL)
 	{
-		g_t_tsdev = ts_open(pc_tsname, 1);
+		g_t_tsdev = ts_open(pc_tsname, 0);		/*以阻塞的方式打开*/
 	}
 	else
 	{
@@ -64,7 +64,7 @@ static int touch_screendev_get_inputevent(PT_input_event pt_input_event)
 	int i_ret;
 
 	static struct timeval t_pre_time;
-	i_ret = ts_read(g_t_tsdev, &t_samp, 1);
+	i_ret = ts_read(g_t_tsdev, &t_samp, 1); 	/*无数据，休眠*/
 
 	if(i_ret < 0)
 	{

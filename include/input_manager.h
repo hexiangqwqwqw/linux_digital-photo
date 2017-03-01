@@ -1,6 +1,7 @@
 #ifndef _INPUT_MANAGER_H
 #define _INPUT_MANAGER_H
 #include <sys/time.h>
+#include <pthread.h>
 
 
 #define INPUT_TYPE_STDIN		0
@@ -19,6 +20,7 @@ typedef struct input_event {
 
 typedef struct input_opr {
 	char  *name;
+	pthread_t t_threadId;
 	int (*device_init)(void);
 	int (*device_exit)(void);
 	int (*get_input_event)(PT_input_event pt_input_event);
